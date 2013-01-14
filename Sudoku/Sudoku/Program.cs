@@ -8,25 +8,15 @@
  */
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Sudoku
 {
 	class Program
     {
         static int[,] inp = new int[9, 9];
-        static void ResetGrid()
-        {
-
-            string str = @"
-                        9,7,0,2,1,0,0,0,0,
-                        5,0,0,0,0,0,0,0,0,
-                        3,6,0,0,0,0,0,4,8,
-                        0,0,3,0,9,0,5,0,0,
-                        0,0,7,0,0,0,1,0,0,
-                        0,0,4,0,6,0,3,0,0,
-                        2,8,0,0,0,0,0,3,5,
-                        0,0,0,0,0,0,0,0,9,
-                        0,0,0,0,3,7,0,6,2";
+        static void ResetGrid(string str)
+        {            
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
@@ -37,16 +27,51 @@ namespace Sudoku
         }
         static void Main(string[] args)
         {
-ResetGrid();            
+        	List<string> lstSudoku = new List<string>();
+        	StreamReader rdr = new StreamReader("C:\\sudoku.txt");
+			
+			string temp = string.Empty;
+			
+			while(!rdr.EndOfStream)
+			{
+				string str = rdr.ReadLine();
+				if(str.Contains("Grid"))
+				{					
+					continue;
+				}
+				temp += str;				
+			}
+			for(int i=0;i<50;i++)
+			{
+				string str = string.Empty;			
+				for(int j=0;j<81;j++)
+				{
+					str += temp[(81*i)+j]+",";
+				}
+				lstSudoku.Add(str.Substring(0,str.Length-1));
+			}			
+			rdr.Close();
+			int sum = 0;
+			foreach(String s in lstSudoku)
+				sum += (getNumber(s));
+			Console.WriteLine(sum.ToString());
+			      
+            
+            Console.ReadKey();
+        }
+        static int getNumber(string s)
+        {
+        	ResetGrid(s);            
             while(!checkComplete(inp))
                 GetLocation(inp);
+            s = string.Empty;
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)                
-                    Console.Write(inp[i, j].ToString() + "  ");
-                Console.WriteLine();
+                    s+= (inp[i, j].ToString());
+                s+="\n";
             }
-            Console.ReadKey();
+            return int.Parse(s.Substring(0,3));
         }
         static bool checkComplete(int[,] num)
         {
