@@ -1,0 +1,24 @@
+using Newtonsoft.Json;
+using System;
+
+
+namespace ConsoleApplication2
+{
+    class Program
+    {
+        static System.Net.WebClient client = new System.Net.WebClient();
+        static void Main(string[] args)
+        {
+            CallURL("http://letsrevolutionizetesting.com/challenge.json");
+            Console.ReadKey();
+        }
+        static void CallURL(string URL)
+        {
+            var str = client.DownloadString(URL);
+            dynamic obj = JsonConvert.DeserializeObject(str);
+            string s = obj.follow;
+            Console.WriteLine(s.Replace("challenge", "challenge.json"));
+            CallURL(s.Replace("challenge", "challenge.json"));
+        }
+    }
+}
